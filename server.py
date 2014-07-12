@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, redirect, url_for
 from pyelasticsearch import ElasticSearch
 import json
 import os
-import sys
+
 
 app = Flask(__name__, static_url_path='')
 app.debug = True
@@ -72,10 +72,6 @@ def get_schema():
     schema_cache = schema
     return schema
 
-@app.route('/')
-def root():
-    return redirect(url_for('static', filename='app.html'))
-
 @app.route('/times')
 def times():
     global es    
@@ -108,7 +104,6 @@ def times():
         'times': times,
         'schema': sub_schema
     })
-    
 
 @app.route('/search')
 def search():
@@ -149,6 +144,10 @@ def search():
 @app.route('/js/<path:path>')
 def static_proxy(path):
     return app.send_static_file(os.path.join('js', path))
+
+@app.route('/')
+def root():
+    return redirect(url_for('static', filename='app.html'))
 
 if __name__ == '__main__':
     app.run()
